@@ -40,6 +40,7 @@ fn main() {
         .profile("Release")
         .uses_cxx11()
         .define("BUILD_STATIC_LIB", "ON")
+        .define("USE_GPU", "ON")
         .build();
 
     // bindgen build
@@ -66,6 +67,12 @@ fn main() {
 
     println!("cargo:rustc-link-search={}", out_path.join("lib").display());
     println!("cargo:rustc-link-search=native={}", dst.display());
+
+    println!("cargo:rustc-link-lib=OpenCL");
+
+    println!("cargo:rustc-link-lib=boost_filesystem");
+    println!("cargo:rustc-link-lib=boost_system");
+
     if target.contains("windows") {
         println!("cargo:rustc-link-lib=static=lib_lightgbm");
     } else {
