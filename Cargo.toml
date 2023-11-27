@@ -7,9 +7,10 @@ repository = "https://github.com/vaaaaanquish/LightGBM"
 description = "Machine learning using LightGBM"
 readme = "README.md"
 exclude = [".gitignore", ".gitmodules", "examples", "lightgbm-sys"]
+edition = "2021"
 
 [dependencies]
-lightgbm-sys = { path = "lightgbm-sys", default-features = false, optional = true}
+lightgbm-sys = { path = "./lightgbm-sys", optional = true}
 libc = "0.2.81"
 derive_builder = "0.5.1"
 serde_json = "1.0.59"
@@ -18,5 +19,5 @@ polars = {version = "0.16.0", optional = true}
 
 [features]
 default = ["lightgbm-sys"]
-dataframe = ["polars"]
+dataframe = ["lightgbm-sys", "polars"]
 gpu = ["lightgbm-sys/gpu"]

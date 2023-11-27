@@ -18,3 +18,4 @@ cmake = "0.1"
 
 [features]
 gpu = []
+default = []
