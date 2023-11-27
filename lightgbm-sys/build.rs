@@ -36,12 +36,18 @@ fn main() {
     }
 
     // CMake
-    let dst = Config::new(&lgbm_root)
+    let mut dst_cfg = Config::new(&lgbm_root);
+    dst_cfg
         .profile("Release")
         .uses_cxx11()
-        .define("BUILD_STATIC_LIB", "ON")
-        .define("USE_GPU", "ON")
-        .build();
+        .define("BUILD_STATIC_LIB", "ON");
+
+    #[cfg(feature = "gpu")]
+    {
+        dst_cfg.define("USE_GPU", "ON");
+    }
+
+    let dst = dst_cfg.build();
 
     // bindgen build
     let bindings = bindgen::Builder::default()
@@ -68,10 +74,13 @@ fn main() {
     println!("cargo:rustc-link-search={}", out_path.join("lib").display());
     println!("cargo:rustc-link-search=native={}", dst.display());
 
-    println!("cargo:rustc-link-lib=OpenCL");
+    #[cfg(feature = "gpu")]
+    {
+        println!("cargo:rustc-link-lib=OpenCL");
 
-    println!("cargo:rustc-link-lib=boost_filesystem");
-    println!("cargo:rustc-link-lib=boost_system");
+        println!("cargo:rustc-link-lib=boost_filesystem");
+        println!("cargo:rustc-link-lib=boost_system");
+    }
 
     if target.contains("windows") {
         println!("cargo:rustc-link-lib=static=lib_lightgbm");
